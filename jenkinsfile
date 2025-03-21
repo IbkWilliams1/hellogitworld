@@ -2,10 +2,10 @@ pipeline {
     agent any
 
     environment {
-        AWS_ACCOUNT_ID = credentials('AWS_ACCOUNT_ID') // Stored in Jenkins Credentials
-        AWS_REGION = credentials('AWS_REGION') // Stored in Jenkins Credentials
-        ECR_REPO_NAME = credentials('ECR_REPO_NAME') // Stored in Jenkins Credentials
-        IMAGE_TAG = "latest" // Modify if versioning is needed
+        AWS_ACCOUNT_ID = '528757802599' // Hardcoded AWS Account ID
+        AWS_REGION = 'eu-west-2'       // Hardcoded AWS Region
+        ECR_REPO_NAME = 'ibk-ecr-repo' // Hardcoded ECR Repository Name
+        IMAGE_TAG = 'latest'           // Hardcoded Image Tag
         IMAGE_NAME = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO_NAME}:${IMAGE_TAG}"
     }
 
@@ -26,8 +26,8 @@ pipeline {
                         sh """
                             aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
                             aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
-                            aws configure set region $AWS_REGION
-                            aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
+                            aws configure set region eu-west-2
+                            aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin 528757802599.dkr.ecr.eu-west-2.amazonaws.com
                         """
                     }
                 }
