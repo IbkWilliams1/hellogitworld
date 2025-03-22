@@ -2,11 +2,13 @@ pipeline {
     agent any
 
     environment {
-        AWS_ACCOUNT_ID = '528757802599' // Hardcoded AWS Account ID
-        AWS_REGION = 'eu-west-2'       // Hardcoded AWS Region
-        ECR_REPO_NAME = 'ibk-ecr-repo' // Hardcoded ECR Repository Name
-        IMAGE_TAG = 'latest'           // Hardcoded Image Tag
+        AWS_ACCOUNT_ID = '528757802599'
+        AWS_REGION = 'eu-west-2'
+        ECR_REPO_NAME = 'ibk-ecr-repo'
+        IMAGE_TAG = 'latest'
         IMAGE_NAME = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPO_NAME}:${IMAGE_TAG}"
+        AWS_ACCESS_KEY_ID = 'AKIAXWHDLYZTWSANAWQ2'
+        AWS_SECRET_ACCESS_KEY = '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'
     }
 
     stages {
@@ -18,12 +20,9 @@ pipeline {
 
         stage('Login to AWS ECR') {
             steps {
-                script {
+                withAWS(role: 'arn:aws:iam::528757802599:role/your-ecr-access-role', roleAccount: '528757802599', region: 'eu-west-2') {
                     sh """
-                        aws configure set aws_access_key_id AKIAXWHDLYZTWSANAWQ2
-                        aws configure set aws_secret_access_key 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
-                        aws configure set region eu-west-2
-                        aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin 528757802599.dkr.ecr.eu-west-2.amazonaws.com
+                        aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
                     """
                 }
             }
