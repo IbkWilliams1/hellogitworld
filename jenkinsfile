@@ -20,7 +20,7 @@ pipeline {
 
         stage('Login to AWS ECR') {
             steps {
-                withAWS(role: 'arn:aws:iam::528757802599:role/your-ecr-access-role', roleAccount: '528757802599', region: 'eu-west-2') {
+                withAWS(role: 'arn:aws:iam::528757802599:user/ibk-cli-user', roleAccount: '528757802599', region: 'eu-west-2') {
                     sh """
                         aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
                     """
